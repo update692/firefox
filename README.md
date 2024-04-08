@@ -8,7 +8,7 @@ Frees browser memory when needed. The function is the same as clicking the `Mini
 
 Default parameters (edit them as you see fit):
 ```
-const threshold = 1000;      // script is activated only when (megabytes) or more RAM are used
+const threshold = 1000;      // script is activated only when Firefox uses (megabytes) or more RAM
 const minz_limit = 500;      // minimize memory when relative RAM consumption exceeds (megabytes)
 const poll_interval = 30000; // check RAM consumption value every (milliseconds)
 const poll_number = 3;       // how many RAM values to aggregate for decision
