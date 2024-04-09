@@ -12,7 +12,7 @@
 
     const threshold = 1000;      // script is activated only when Firefox uses (megabytes) or more RAM
     const minz_limit = 500;      // minimize memory when relative RAM consumption exceeds (megabytes)
-    const poll_interval = 5000; // check RAM consumption value every (milliseconds)
+    const poll_interval = 30000; // check RAM consumption value every (milliseconds)
     const poll_number = 3;       // how many RAM consumption values to aggregate for decision
     const debug_beep = true;     // sound beep when memory is cleared
     const beep_time = 0.1;       // beep duration (seconds)
