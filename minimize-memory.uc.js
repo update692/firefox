@@ -1,18 +1,19 @@
 // ==UserScript==
 // @name            Minimize Memory Usage
+// @author          jterror
+// @version         1.0
 // @include         main
+// @onlyonce
 // ==/UserScript==
 
 
 (function () {
-    console.log(">>>>: Minimize memory usage: START");
+    console.log(">>>>: Minimize Memory Usage: START");
 
     const threshold = 1000;      // script is activated only when Firefox uses (megabytes) or more RAM
     const minz_limit = 500;      // minimize memory when relative RAM consumption exceeds (megabytes)
-    const poll_interval = 30000; // check RAM consumption value every (milliseconds)
-    const poll_number = 3;       // how many RAM values to aggregate for decision
-    const debug_notify = true;   // show notification when memory is cleared
-    const notify_time = 1000;    // keep notification for (milliseconds)
+    const poll_interval = 5000; // check RAM consumption value every (milliseconds)
+    const poll_number = 3;       // how many RAM consumption values to aggregate for decision
     const debug_beep = true;     // sound beep when memory is cleared
     const beep_time = 0.1;       // beep duration (seconds)
 
@@ -21,10 +22,28 @@
     const STAT_LOW = 2;
 
     const Mgr = Cc["@mozilla.org/memory-reporter-manager;1"].getService(Ci.nsIMemoryReporterManager);
-    const urlbar = document.querySelector('#urlbar-background');
+    var timer_poll; // persistent variable so nsITimer doesn't disappear
+
+    // function setTimeout(callback, ms, varname) {
+    //     setTimer(callback, ms, Ci.nsITimer.TYPE_ONE_SHOT, varname);
+    // }
+
+    function setInterval(callback, ms, varname) {
+        setTimer(callback, ms, Ci.nsITimer.TYPE_REPEATING_SLACK, varname);
+    }
+
+    function setTimer(callback, ms, type, varname) {
+        eval(
+            `${varname} = Cc['@mozilla.org/timer;1'].createInstance(Ci.nsITimer);
+            ${varname}.initWithCallback({notify: callback}, ms, type);`
+        );
+    }
+
+    // function clearTimer(timer) {
+    //     timer.cancel();
+    // }
 
     async function doMMU() {
-        if (debug_notify) doNotify();
         if (debug_beep) doBeep();
         Services.obs.notifyObservers(null, "child-mmu-request");
         Mgr.minimizeMemoryUsage(() => {
@@ -37,27 +56,13 @@
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
-        // Set the gain (volume)
         gainNode.gain.value = 0.5;
-        // Connect the oscillator to the gain node, and the gain node to the audio context's destination (the speakers)
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
-        // Set the oscillator to a sine wave
         oscillator.type = 'sine';
-        // Set the frequency of the beep
         oscillator.frequency.value = 440; // A4 note
-        // Start the oscillator
         oscillator.start();
-        // Stop the oscillator after 1 second
         oscillator.stop(audioContext.currentTime + beep_time);
-    }
-
-    async function doNotify() {
-        if (typeof doNotify.def_color == 'undefined') doNotify.def_color = urlbar.style.backgroundColor;
-        urlbar.style.backgroundColor = "red";
-        setTimeout(() => {
-            urlbar.style.backgroundColor = doNotify.def_color;
-        }, notify_time);
     }
 
     async function getRAM() {
@@ -156,5 +161,5 @@
             console.log(">>>>: reset");
             doReset();
         }
-    }, poll_interval);
+    }, poll_interval, "timer_poll");
 })();
