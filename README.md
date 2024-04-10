@@ -21,10 +21,10 @@ const beep_time = 0.1;       // beep duration (seconds)
 ### Preparation:
 
 [xiaoxiaoflood](https://github.com/xiaoxiaoflood/firefox-scripts)'s method
-1. Unpack [firefox.zip](https://github.com/update692/firefox/raw/master/firefox.zip) into Firefox installation folder
-2. Unpack [chrome.zip](https://github.com/update692/firefox/raw/master/chrome.zip) into your Firefox profile `chrome` subfolder
+1. Unpack [firefox.zip](https://github.com/update692/firefox/raw/master/firefox.zip) into Firefox installation folder.
+2. Unpack [chrome.zip](https://github.com/update692/firefox/raw/master/chrome.zip) into your Firefox profile `chrome` subfolder.
 
 ### Installation:
 
-3. Place [minimize-memory.uc.js](https://github.com/update692/firefox/raw/master/minimize-memory.uc.js) into your Firefox profile `chrome` subfolder
-4. Restart Firefox, you should have the button to manage scripts with Minimize Memory Usage script already registered there
+3. Place [minimize-memory.uc.js](https://github.com/update692/firefox/raw/master/minimize-memory.uc.js) into your Firefox profile `chrome` subfolder.
+4. Restart Firefox, you should have the button to manage scripts with Minimize Memory Usage script already registered there. Make sure script is activated (have check mark).
