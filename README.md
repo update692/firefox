@@ -1,6 +1,6 @@
 # Firefox userChrome.js scripts
 
-**minimize-memory.uc.js** (tested on Firefox 124.0.2)
+[minimize-memory.uc.js](https://github.com/update692/firefox/raw/master/minimize-memory.uc.js) (tested on Firefox 124.0.2)
 
 Automatically frees browser memory when needed. The function is the same as clicking the `Minimize memory usage` button on the `about:memory` tab.
 
