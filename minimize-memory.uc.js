@@ -14,6 +14,7 @@
     const minz_limit = 500;      // minimize memory when relative RAM consumption exceeds (megabytes)
     const poll_interval = 30000; // check RAM consumption value every (milliseconds)
     const poll_number = 3;       // how many RAM consumption values to aggregate for decision
+    // must be less than poll_interval
     const cooldown_time = 5000;  // give (milliseconds) for RAM level to stalilize after minimizing
     const debug_beep = true;     // sound beep when memory is cleared
     const beep_time = 0.1;       // beep duration (seconds)
