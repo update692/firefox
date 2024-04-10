@@ -2,7 +2,7 @@
 
 **minimize-memory.uc.js** (tested on Firefox 124.0.2)
 
-Frees browser memory automatically when needed. The function is the same as clicking the `Minimize memory usage` button on the `about:memory` tab.
+Automatically frees browser memory when needed. The function is the same as clicking the `Minimize memory usage` button on the `about:memory` tab.
 
 Default parameters (edit them as you see fit):
 ```
