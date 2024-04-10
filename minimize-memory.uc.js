@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name            Minimize Memory Usage
 // @author          jterror
+// @homepageURL     https://github.com/update692/firefox
 // @version         1.0
 // @include         main
 // @onlyonce
