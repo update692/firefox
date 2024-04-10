@@ -14,6 +14,7 @@
     const minz_limit = 500;      // minimize memory when relative RAM consumption exceeds (megabytes)
     const poll_interval = 30000; // check RAM consumption value every (milliseconds)
     const poll_number = 3;       // how many RAM consumption values to aggregate for decision
+    const cooldown_time = 5000;  // give (milliseconds) for RAM level to stalilize after minimizing
     const debug_beep = true;     // sound beep when memory is cleared
     const beep_time = 0.1;       // beep duration (seconds)
 
@@ -21,12 +22,16 @@
     const STAT_HIGH = 1;
     const STAT_LOW = 2;
 
-    const Mgr = Cc["@mozilla.org/memory-reporter-manager;1"].getService(Ci.nsIMemoryReporterManager);
-    var timer_poll; // persistent variable so nsITimer doesn't disappear
+    let current_level = threshold; // base for tracking rising memory
+    let lower_level = threshold;   // base for tracking falling memory
 
-    // function setTimeout(callback, ms, varname) {
-    //     setTimer(callback, ms, Ci.nsITimer.TYPE_ONE_SHOT, varname);
-    // }
+    const Mgr = Cc["@mozilla.org/memory-reporter-manager;1"].getService(Ci.nsIMemoryReporterManager);
+    let timer_poll;     // persistent variable so nsITimer doesn't disappear
+    let timer_cooldown; // take time for RAM to stabilize after minimizing
+
+    function setTimeout(callback, ms, varname) {
+        setTimer(callback, ms, Ci.nsITimer.TYPE_ONE_SHOT, varname);
+    }
 
     function setInterval(callback, ms, varname) {
         setTimer(callback, ms, Ci.nsITimer.TYPE_REPEATING_SLACK, varname);
@@ -47,8 +52,13 @@
         if (debug_beep) doBeep();
         Services.obs.notifyObservers(null, "child-mmu-request");
         Mgr.minimizeMemoryUsage(() => {
-            console.log(">>>>: Memory minimization completed" + ` (${new Date().toISOString()})`);
-            update_level = true;
+            console.log(`>>>>: Memory minimization completed (${new Date().toISOString()})`);
+            setTimeout(async () => {
+                let megabytes = await getRAM();
+                current_level = megabytes;
+                lower_level = megabytes;
+                console.log(`>>>>: level updated: ${megabytes}`);
+            }, cooldown_time, "timer_cooldown");
         });
     }
 
@@ -66,15 +76,15 @@
     }
 
     async function getRAM() {
-        var info = await ChromeUtils.requestProcInfo();
-        var bytes = info.memory;
+        let info = await ChromeUtils.requestProcInfo();
+        let bytes = info.memory;
         for (let child of info.children) bytes += child.memory;
         return Math.round(bytes / 1048576);
     }
 
     function checkStat(buffer, current, limit) {
         const values = buffer.getValues();
-        var ret = STAT_NONE;
+        let ret = STAT_NONE;
         if (values.every(value => value >= current + limit))
             ret = STAT_HIGH;
         else if (values.every(value => value < current))
@@ -118,24 +128,15 @@
     }
 
     const statbuf = new CircularBuffer(poll_number);
-    var current_level = threshold;
-    var update_level = false;
-    var lower_level = threshold; // base for tracking lower memory minimize
 
     function doReset() {
         current_level = threshold;
-        update_level = false;
         lower_level = threshold;
         statbuf.clear();
     }
 
     setInterval(async () => {
-        var megabytes = await getRAM();
-        if (update_level) {
-            update_level = false;
-            current_level = megabytes;
-            lower_level = megabytes;
-        }
+        let megabytes = await getRAM();
         console.log(`>>>>: ${megabytes} MB, level: ${current_level}, level-down: ${lower_level}, threshold: ${threshold}, limit: ${minz_limit}`);
 
         if (megabytes >= threshold) {
