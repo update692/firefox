@@ -14,6 +14,7 @@ const poll_number = 3;       // how many RAM consumption values to aggregate for
 const cooldown_time = 5000;  // give (milliseconds) for RAM level to stalilize after minimizing
 const debug_beep = true;     // sound beep when memory is cleared
 const beep_time = 0.1;       // beep duration (seconds)
+const round_mb = 20;         // round RAM values to (megabytes)
 ```
 
 ## How to use
