@@ -19,6 +19,7 @@
     const cooldown_time = 5000;  // give (milliseconds) for RAM level to stalilize after minimizing
     const debug_beep = true;     // sound beep when memory is cleared
     const beep_time = 0.1;       // beep duration (seconds)
+    const round_mb = 20;         // round RAM values to (megabytes)
 
     const STAT_NONE = 0;
     const STAT_HIGH = 1;
@@ -30,6 +31,12 @@
     const Mgr = Cc["@mozilla.org/memory-reporter-manager;1"].getService(Ci.nsIMemoryReporterManager);
     let timer_poll;     // persistent variable so nsITimer doesn't disappear
     let timer_cooldown; // take time for RAM to stabilize after minimizing
+
+    function roundToNearest(number, increment) {
+        if (increment === 0) return number;
+        if (increment < 0) increment = Math.abs(increment);
+        return Math.round(number / increment) * increment;
+    }
 
     function setTimeout(callback, ms, varname) {
         setTimer(callback, ms, Ci.nsITimer.TYPE_ONE_SHOT, varname);
@@ -81,7 +88,7 @@
         const info = await ChromeUtils.requestProcInfo();
         let bytes = info.memory;
         for (let child of info.children) bytes += child.memory;
-        return Math.round(bytes / 1048576);
+        return roundToNearest(Math.round(bytes / 1048576), round_mb);
     }
 
     function checkStat(buffer, current, limit) {
