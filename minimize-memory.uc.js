@@ -56,7 +56,7 @@
         Mgr.minimizeMemoryUsage(() => {
             console.log(`>>>>: Memory minimization completed (${new Date().toISOString()})`);
             setTimeout(async () => {
-                let megabytes = await getRAM();
+                const megabytes = await getRAM();
                 current_level = megabytes;
                 lower_level = megabytes;
                 console.log(`>>>>: level updated: ${megabytes}`);
@@ -78,7 +78,7 @@
     }
 
     async function getRAM() {
-        let info = await ChromeUtils.requestProcInfo();
+        const info = await ChromeUtils.requestProcInfo();
         let bytes = info.memory;
         for (let child of info.children) bytes += child.memory;
         return Math.round(bytes / 1048576);
@@ -138,7 +138,7 @@
     }
 
     setInterval(async () => {
-        let megabytes = await getRAM();
+        const megabytes = await getRAM();
         console.log(`>>>>: ${megabytes} MB, level: ${current_level}, level-down: ${lower_level}, threshold: ${threshold}, limit: ${minz_limit}`);
 
         if (megabytes >= threshold) {
