@@ -146,30 +146,31 @@
 
     setInterval(async () => {
         const megabytes = await getRAM();
-        console.log(`>>>>: ${megabytes} MB, level: ${current_level}, level-down: ${lower_level}, threshold: ${threshold}, limit: ${minz_limit}`);
+        let log_msg = `>>>>: ${megabytes} MB, level: ${current_level}, level-down: ${lower_level}, threshold: ${threshold}, limit: ${minz_limit}`;
 
         if (megabytes >= threshold) {
             statbuf.add(megabytes);
             if (statbuf.isFull()) {
                 let result = checkStat(statbuf, current_level, minz_limit);
                 if (result === STAT_HIGH) {
-                    console.log(">>>>: high>>");
+                    log_msg += " : high>>";
                     doMMU();
                 } else if (result === STAT_LOW) {
-                    console.log(">>>>: low<<");
+                    log_msg += " : low<<";
                     current_level = megabytes;
                     if (current_level <= lower_level - Math.round(minz_limit / 2)) {
                         doMMU();
                     }
                 } else {
-                    // console.log(">>>>: none");
+                    log_msg += " : none";
                 }
             } else {
-                console.log(">>>>: filling");
+                log_msg += " : filling^^";
             }
         } else {
-            console.log(">>>>: reset");
+            log_msg += " : reset--";
             doReset();
         }
+        console.log(log_msg);
     }, poll_interval, "timer_poll");
 })();
