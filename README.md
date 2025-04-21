@@ -1,6 +1,6 @@
 # Firefox userChrome.js scripts
 
-[minimize-memory.uc.js](https://github.com/update692/firefox/raw/master/minimize-memory.uc.js) (tested on Firefox 124.0.2)
+[minimize-memory.uc.js](https://github.com/update692/firefox/raw/master/minimize-memory.uc.js) (tested on Firefox 137.0.2)
 
 Automatically frees browser memory when needed. The function is the same as clicking the `Minimize memory usage` button on the `about:memory` tab.
 
@@ -12,7 +12,7 @@ const poll_interval = 30000; // check RAM consumption value every (milliseconds)
 const poll_number = 3;       // how many RAM consumption values to aggregate for decision
 // must be less than poll_interval
 const cooldown_time = 5000;  // give (milliseconds) for RAM level to stalilize after minimizing
-const debug_beep = true;     // sound beep when memory is cleared
+const debug_beep = false;    // sound beep when memory is cleared
 const beep_time = 0.1;       // beep duration (seconds)
 const round_mb = 20;         // round RAM values to (megabytes)
 ```

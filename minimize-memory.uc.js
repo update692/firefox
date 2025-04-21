@@ -2,14 +2,14 @@
 // @name            Minimize Memory Usage
 // @author          jterror
 // @homepageURL     https://github.com/update692/firefox
-// @version         1.0
+// @version         1.1
 // @include         main
 // @onlyonce
 // ==/UserScript==
 
 
 (function () {
-    console.log(">>>>: Minimize Memory Usage: START");
+    window.console.log(">>>>: Minimize Memory Usage: START");
 
     const threshold = 1000;      // script is activated only when Firefox uses (megabytes) or more RAM
     const minz_limit = 500;      // minimize memory when relative RAM consumption exceeds (megabytes)
@@ -17,7 +17,7 @@
     const poll_number = 3;       // how many RAM consumption values to aggregate for decision
     // must be less than poll_interval
     const cooldown_time = 5000;  // give (milliseconds) for RAM level to stalilize after minimizing
-    const debug_beep = true;     // sound beep when memory is cleared
+    const debug_beep = false;     // sound beep when memory is cleared
     const beep_time = 0.1;       // beep duration (seconds)
     const round_mb = 20;         // round RAM values to (megabytes)
 
@@ -61,12 +61,12 @@
         if (debug_beep) doBeep();
         Services.obs.notifyObservers(null, "child-mmu-request");
         Mgr.minimizeMemoryUsage(() => {
-            console.log(`>>>>: Memory minimization completed (${new Date().toISOString()})`);
+            window.console.log(`>>>>: Memory minimization completed (${new Date().toISOString()})`);
             setTimeout(async () => {
                 const megabytes = await getRAM();
                 current_level = megabytes;
                 lower_level = megabytes;
-                console.log(`>>>>: level updated: ${megabytes}`);
+                window.console.log(`>>>>: level updated: ${megabytes}`);
             }, cooldown_time, "timer_cooldown");
         });
     }
@@ -171,6 +171,6 @@
             log_msg += " : reset--";
             doReset();
         }
-        console.log(log_msg);
+        window.console.log(log_msg);
     }, poll_interval, "timer_poll");
 })();
